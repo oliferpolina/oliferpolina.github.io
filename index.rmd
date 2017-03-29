@@ -1,0 +1,198 @@
+-— 
+title: "Мой отчёт" 
+author: "Олифер Полина" 
+date: '29 марта 2017 г ' 
+output: html_document 
+-— 
+
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(echo = TRUE) 
+``` 
+
+## R Studio 
+
+Отчет о проделанной работе. 
+
+#### 1. Вычислить среднее для каждой колонки таблицы iris, за исключением колонки “Species” и соберите результат в список (list). 
+
+``````{r iris} 
+head(iris) 
+``` 
+```{r} 
+iris
+iris$Sepal.Length
+mean(iris$Sepal.Length)
+x=mean(iris$Sepal.Length)
+x
+iris$Sepal.Width
+mean(iris$Sepal.Width)
+y=mean(iris$Sepal.Width)
+y
+iris$Petal.Length
+mean(iris$Petal.Length)
+z=mean(iris$Petal.Length)
+z
+iris$Petal.Width
+mean(iris$Petal.Width)
+h=mean(iris$Petal.Width)
+h
+list(x,y,x,h)
+length(list(x,y,x,h)) 
+ 
+``` 
+
+#### 2. Вычислить среднее для каждой строки, исключив перед этим колонку “Species”, и сохранить результат в векторе. 
+
+```{r i, echo=FALSE} 
+iris
+y = c()
+for (i in 1:150)
+{x = sum(iris[i,1:4]/4) 
+y = c(x,y)}
+y
+
+``` 
+
+#### 3. Создайте случайные 1000 нуклеотидов, сохранив их в вектор DNA, посчитайте количество нуклеотидов A и T, их долю от общей длинны ДНК и запишите результат в вектор ‘dna_at’ 
+
+```{r DNA} 
+DNA = c("A","G","T","C")
+DNA=summary(DNA, size = 1000, replece=T)
+DNA=factor(DNA)
+summary(DNA)/length(DNA)
+dna_at=c(DNA[1],DNA[4]); dna_at
+dna_at 
+
+``` 
+#### 4. Создайте векто в котором записан произвольный набор латинских букв длинной не менее 10000 символов и посчитайте количество гласных. 
+```{r ABC} 
+letters 
+abc=sample(letters, size=10000, replace=T) 
+abc 
+for(i in length(abc)) 
+  if(abc[i]=="a"|abc[i]=="e"|abc[i]=="i"|abc[i]=="o"|abc[i]=="u"|abc[i]=="y") 
+  {vowel=y+1} 
+"else{vowel+0}" 
+'vowel' 
+
+#### 5. Отсортируйте все виды в таблице iris по средней длинне лепестков. Результат должен быть фактором с градациями в виде имен видов с правильной последовательностью уровней. 
+```{r ААА} 
+iris
+names(iris)
+iris$Petal.Length
+setosa=c(iris$Petal.Length[1:50])
+setosa
+versicolor=c(iris$Petal.Length[51:100])
+versicolor
+virginica=c(iris$Petal.Length[101:150])
+mean(setosa)
+mean(versicolor)
+mean(virginica)
+Species=c(mean(setosa),mean(versicolor),mean(virginica))
+sort(Species)
+f=factor(sort(Species))
+f
+names(f)<- c("setosa", "versicolor", "virginica")
+f 
+
+#### 6. Напишите функцию для рассчета медианы вектора самостоятельно. 
+
+```{r mediana} 
+median <- function(x) {
+  z=sort(x)
+  if((length(z)%%2)!=0){
+    result = z[(length(x)/2)+1]
+  }
+  else
+    result = (z[length(x)/2]+z[length(x)/2+1])/2
+  return(result)
+}
+median(iris$Sepal.Length)
+
+#### 7. Постройте график зависимости длины чашелистиков от длинны лепестков для каждого вида из таблицы iris 
+
+```{r ggplot, echo=FALSE} 
+iris
+names(iris)
+x=iris$Sepal.Length[1:50]
+y=iris$Petal.Length[1:50]
+plot(x,y,main="The dependence of the length of the sepal length of petal to form setosa", xlab="Sepal.Length",ylab="$Petal.Length", col="purple")
+x=NULL
+y=NULL
+x=iris$Sepal.Length[51:101]
+y=iris$Petal.Length[51:101]
+plot(x,y,main="The dependence of the length of the sepal length of petal to form versicolor", xlab="Sepal.Length",ylab="$Petal.Length", col="red")
+x=NULL
+y=NULL
+x=iris$Sepal.Length[101:150]
+y=iris$Petal.Length[101:150]
+plot(x,y,main="The dependence of the length of the sepal length of petal to form virginica", xlab="Sepal.Length",ylab="$Petal.Length", col="orange")
+x=NULL
+y=NULL
+
+#### 8. По данным таблицы ‘diamonds’(пакет ggplot2 ) почитайте среднюю стоимость цены карата для бриллиантов дороже 1000$ для каждой категории яркости (clarity). 
+
+```{r diamond, echo=FALSE} 
+library(ggplot2) 
+diamonds
+tapply(diamonds$price[diamonds$price >1000], diamonds$clarity[diamonds$price >1000], mean) 
+
+##**Регрессионный и корелляционный анализы** 
+
+#### 1. Написать собственную функцию, которая для двух векторов одинакового объема считала бы коэффициент корелляции Спирмена. *
+
+```{r} 
+help_Spirmen=function(table,ind)
+{
+  table=table[order(table[,ind]),]
+  table[,ind+2]=1:nrow(table)
+  line=table[,ind]
+  for (i in as.numeric(names(table(line)[table(line)>1]))){
+    sum=0
+    for (j in which(line %in% i))
+    {
+      sum=sum+table[j,ind+2]
+    }
+    sum=sum/length(which(line %in% i))
+    table[which(line %in% i),ind+2]=sum
+  }
+  return(table)
+}
+Spirmen=function(x1,x2)
+{
+  if(length(x1)!=length(x2))
+  {
+    return("Problem with the lengths of the vectors")
+  }
+  table=matrix(ncol=5,nrow=length(x1))
+  table[,1]=x1
+  table[,2]=x2
+  table=help_Spirmen(table,1)
+  table=help_Spirmen(table,2)
+  table[,5]=(table[,3]-table[,4])**2
+  sum=sum(table[,5])
+  result=1-6*sum/(length(x1)*(length(x1)**2-1))
+  return(result)  
+}
+
+#### 2. Постройте оптимальную линейную модель множественной регрессии для co2_flux, используя только данные летних месяцев. *
+
+```{r}
+med=function(elements)
+{
+  elements=elements[order(elements)]
+  if(length(elements)%%2==0)
+  {
+    n=length(elements)%/%2
+    element=(elements[n]+elements[n+1])/2
+  }
+  else
+  {
+    element=elements[length(elements)%/%2+1]
+  }
+  return(element)
+}
+
+
+#*По идее здесь должны появиться коэф. корреляции Спирмена и модель мн. регрессии, но они не появилось
